@@ -35,7 +35,7 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
   double birdWidth = 0.07;
   double birdHeight = 0.1;
   double pipeWidth = 0.2;
-  double pipeHeight = 0.6;
+  double pipeGap = 0.3; // Ajout de l'écart entre les tuyaux
   List<List<double>> pipes = [];
   bool gameHasStarted = false;
   bool gameOver = false;
@@ -45,16 +45,15 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
   void initState() {
     super.initState();
     Timer.periodic(Duration(milliseconds: 60), (timer) {
-      print("periodic");
       if (gameHasStarted && !gameOver) {
         setState(() {
           time += 0.1;
           height = gravity * time * time + velocity * time;
-          birdY = max(0, min(1 - birdHeight, birdY - height));
+          birdY -= 0.01;
 
           // Add pipes if needed
           if (pipes.isEmpty || pipes.last[0] < 0.5) {
-            double pipeY = Random().nextDouble() * (1 - pipeHeight - 0.2);
+            double pipeY = Random().nextDouble() * (1 - pipeGap);
             pipes.add([1.0, pipeY]);
           }
 
@@ -65,26 +64,50 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
               pipes.removeAt(i);
               score++;
               i--;
-            } else {
-              if (pipes[i][0] < 0.1 + birdWidth && pipes[i][0] + pipeWidth > 0.1) {
-                if (birdY < pipes[i][1] || birdY + birdHeight > pipes[i][1] + pipeHeight) {
-                  gameOver = true;
-                  gameHasStarted = false;
-                }
-              }
             }
           }
 
-          // Check if the bird hits the ground or ceiling
-          if (birdY <= 0 || birdY >= 1 - birdHeight) {
-            gameOver = true;
-            gameHasStarted = false;
-          }
+          // Check for collisions
+          _checkCollisions();
         });
       }
     });
   }
   
+  void _checkCollisions() {
+    double birdBottom = birdY + birdHeight;
+    double birdLeft = 0.1;
+    double birdRight = birdLeft + birdWidth;
+
+    for (var pipe in pipes) {
+      double pipeX = pipe[0];
+      double pipeY = pipe[1];
+
+      double pipeLeft = pipeX;
+      double pipeRight = pipeLeft + pipeWidth;
+      double pipeTop = pipeY;
+      double pipeBottom = pipeY + pipeGap;
+
+      // Vérification des collisions horizontales
+      bool birdInsidePipeHorizontally = birdRight > pipeLeft && birdLeft < pipeRight;
+      
+      // Vérification des collisions verticales (oiseaux touche les bords des tuyaux)
+      bool birdHitsTopPipe = birdY < pipeTop;
+      bool birdHitsBottomPipe = birdBottom > pipeBottom;
+
+      if (birdInsidePipeHorizontally && (birdHitsTopPipe || birdHitsBottomPipe)) {
+        gameOver = true;
+        gameHasStarted = false;
+      }
+    }
+
+    // Check if the bird hits the ground or ceiling
+    if (birdY <= 0 || birdY >= 1 - birdHeight) {
+      gameOver = true;
+      gameHasStarted = false;
+    }
+  }
+
   void jump() {
     if (!gameHasStarted) {
       setState(() {
@@ -93,15 +116,13 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
         score = 0;
         birdY = 0.1;
         gameOver = false;
-        velocity = 0.3;
+        velocity = 0.5;
         time = 0;
-        height= 0.01;
-        print("coucou");
+        height = 0.01;
       });
-    }else{
+    } else {
       setState(() {
         birdY += 0.1;
-        print("mon reuf");
       });
     }
   }
@@ -127,15 +148,20 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                         color: Colors.green,
                       ),
                     ),
+                    // Oiseau avec hitbox
                     Positioned(
                       bottom: birdY * MediaQuery.of(context).size.height,
                       left: MediaQuery.of(context).size.width * 0.1,
                       child: Container(
                         width: MediaQuery.of(context).size.width * birdWidth,
                         height: MediaQuery.of(context).size.height * birdHeight,
-                        color: Colors.yellow,
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          border: Border.all(color: Colors.red, width: 2), // Bordure pour hitbox
+                        ),
                       ),
                     ),
+                    // Tuyaux avec hitbox
                     ...pipes.map((pipe) {
                       return Positioned(
                         bottom: 0,
@@ -145,13 +171,19 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                             Container(
                               width: MediaQuery.of(context).size.width * pipeWidth,
                               height: MediaQuery.of(context).size.height * pipe[1],
-                              color: Colors.brown,
+                              decoration: BoxDecoration(
+                                color: Colors.brown,
+                                border: Border.all(color: Colors.red, width: 2), // Bordure pour hitbox
+                              ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height * (1 - pipe[1] - pipeHeight)),
+                            SizedBox(height: MediaQuery.of(context).size.height * pipeGap),
                             Container(
                               width: MediaQuery.of(context).size.width * pipeWidth,
-                              height: MediaQuery.of(context).size.height * pipeHeight,
-                              color: Colors.brown,
+                              height: MediaQuery.of(context).size.height * (1 - pipe[1] - pipeGap),
+                              decoration: BoxDecoration(
+                                color: Colors.brown,
+                                border: Border.all(color: Colors.red, width: 2), // Bordure pour hitbox
+                              ),
                             ),
                           ],
                         ),
