@@ -1,125 +1,191 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:math';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flappy Bird',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: FlappyBirdGame(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class FlappyBirdGame extends StatefulWidget {
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _FlappyBirdGameState createState() => _FlappyBirdGameState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _FlappyBirdGameState extends State<FlappyBirdGame> {
+  double birdY = 0;
+  double time = 0;
+  double height = 0.1;
+  double velocity = 0;
+  double gravity = -6;
+  double birdWidth = 0.07;
+  double birdHeight = 0.1;
+  double pipeWidth = 0.2;
+  double pipeHeight = 0.6;
+  List<List<double>> pipes = [];
+  bool gameHasStarted = false;
+  bool gameOver = false;
+  int score = 0;
+  
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(milliseconds: 60), (timer) {
+      print("periodic");
+      if (gameHasStarted && !gameOver) {
+        setState(() {
+          time += 0.1;
+          height = gravity * time * time + velocity * time;
+          birdY = max(0, min(1 - birdHeight, birdY - height));
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+          // Add pipes if needed
+          if (pipes.isEmpty || pipes.last[0] < 0.5) {
+            double pipeY = Random().nextDouble() * (1 - pipeHeight - 0.2);
+            pipes.add([1.0, pipeY]);
+          }
+
+          // Move pipes and check for collision
+          for (int i = 0; i < pipes.length; i++) {
+            pipes[i][0] -= 0.02;
+            if (pipes[i][0] < -pipeWidth) {
+              pipes.removeAt(i);
+              score++;
+              i--;
+            } else {
+              if (pipes[i][0] < 0.1 + birdWidth && pipes[i][0] + pipeWidth > 0.1) {
+                if (birdY < pipes[i][1] || birdY + birdHeight > pipes[i][1] + pipeHeight) {
+                  gameOver = true;
+                  gameHasStarted = false;
+                }
+              }
+            }
+          }
+
+          // Check if the bird hits the ground or ceiling
+          if (birdY <= 0 || birdY >= 1 - birdHeight) {
+            gameOver = true;
+            gameHasStarted = false;
+          }
+        });
+      }
     });
   }
-
+  
+  void jump() {
+    if (!gameHasStarted) {
+      setState(() {
+        gameHasStarted = true;
+        pipes = [];
+        score = 0;
+        birdY = 0.1;
+        gameOver = false;
+        velocity = 0.3;
+        time = 0;
+        height= 0.01;
+        print("coucou");
+      });
+    }else{
+      setState(() {
+        birdY += 0.1;
+        print("mon reuf");
+      });
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+        child: Stack(
+          children: [
+            GestureDetector(
+              onTap: jump,
+              child: Container(
+                color: Colors.blue,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        color: Colors.green,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: birdY * MediaQuery.of(context).size.height,
+                      left: MediaQuery.of(context).size.width * 0.1,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * birdWidth,
+                        height: MediaQuery.of(context).size.height * birdHeight,
+                        color: Colors.yellow,
+                      ),
+                    ),
+                    ...pipes.map((pipe) {
+                      return Positioned(
+                        bottom: 0,
+                        left: pipe[0] * MediaQuery.of(context).size.width,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * pipeWidth,
+                              height: MediaQuery.of(context).size.height * pipe[1],
+                              color: Colors.brown,
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height * (1 - pipe[1] - pipeHeight)),
+                            Container(
+                              width: MediaQuery.of(context).size.width * pipeWidth,
+                              height: MediaQuery.of(context).size.height * pipeHeight,
+                              color: Colors.brown,
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    Positioned(
+                      top: 50,
+                      right: 20,
+                      child: Text(
+                        'Score: $score',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ),
+                    if (gameOver)
+                      Center(
+                        child: Text(
+                          'Game Over!',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
