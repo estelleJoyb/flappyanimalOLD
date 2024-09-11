@@ -1,4 +1,5 @@
   import 'package:flutter/material.dart';
+import 'leaderboard_page.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({Key? key}) : super(key: key);
@@ -46,11 +47,12 @@ class MainMenu extends StatelessWidget {
               ElevatedButton(
                 child: Text('Meilleurs Scores'),
                 onPressed: () {
-                  // Naviguer vers l'écran des meilleurs scores
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LeaderboardPage()),
+                  );
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                ),
+                // ... le reste du style du bouton
               ),
               SizedBox(height: 20),
               ElevatedButton(
