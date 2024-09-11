@@ -9,7 +9,7 @@ class MainMenu extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/background.png'),
+            image: AssetImage('background.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -18,7 +18,7 @@ class MainMenu extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Flappy Bird',
+                'Flappy Animals',
                 style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
