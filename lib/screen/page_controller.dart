@@ -13,115 +13,31 @@ class PagesController extends StatefulWidget {
 }
 
 class _PagesControllerState extends State<PagesController> {
-  // void goExit() {
-  //   Navigator.pop(context);
-  //   goConnexion();
-  // }
+  void goBestScores() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MenuScreen(goExit, goPlay, goBestScores)));
+  }
 
-  // void goConnexion() {
-  //   Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (context) => ConnectionScreen(goSelectionStock, goExit,
-  //               apiPostItemQueryFind, getToken, goParameters)));
-  // }
+  void goPlay() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MenuScreen(goExit, goPlay, goBestScores)));
+  }
 
-  // void goParameters() {
-  //   Navigator.push(context,
-  //       MaterialPageRoute(builder: (context) => ParameterScreen(goConnexion)));
-  // }
+  void goMenu() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MenuScreen(goExit, goPlay, goBestScores)));
+  }
 
-  // void goSelectionStock() {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => SelectionStockScreen(goStockQuantity, goExit)),
-  //   );
-  // }
-
-  // void goStockQuantity() {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => StockQuantityScreen(goSupplier, goConsignee,
-  //             goExit, supplierQueryFind, consigneeQueryFind)),
-  //   );
-  // }
-
-  // void goSupplier() {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => SupplierScreen(okSupplier, goExit)),
-  //   );
-  // }
-
-  // void goConsignee() {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //         builder: (context) => ConsigneeScreen(okConsignee, goExit)),
-  //   );
-  // }
-
-  // void okSupplier() {
-  //   goStockQuantity(); //to edit
-  // }
-
-  // void okConsignee() {
-  //   goStockQuantity(); //to edit
-  // }
-
-  // Future<String> getToken(WidgetRef ref) async {
-  //   print("get token");
-  //   //print("cert : ${ref.watch(providerDemo).cert.asInt8List()}");
-  //   //print("key : ${ref.watch(providerDemo).key.asInt8List()}");
-  //   String stringtoken = (await ApiService().getToken(
-  //       ref.watch(providerDemo).certPath, ref.watch(providerDemo).keyPath))!;
-  //   //String stringtoken = (await ApiService().getToken(
-  //   //    ref.watch(providerDemo).certPath, ref.watch(providerDemo).keyPath))!;
-  //   await Future.delayed(const Duration(seconds: 1));
-  //   if (stringtoken.isNotEmpty) {
-  //     final jsontoken = json.decode(stringtoken);
-  //     String token = jsontoken['access_token'];
-  //     String refreshToken = jsontoken['refresh_token'];
-  //     ref.watch(providerDemo.notifier).setToken("Bearer $token");
-  //     ref.watch(providerDemo.notifier).setRefreshToken(refreshToken);
-
-  //     return token;
-  //   }
-  //   return "";
-  // }
-
-  // Future<HashMap> apiPostItemQueryFind(WidgetRef ref) async {
-  //   print("apiPostItemQueryFind");
-  //   HashMap itemMap = await ApiService().itemQueryFind(ref);
-  //   await Future.delayed(const Duration(seconds: 1));
-  //   print("itemMap:  $itemMap");
-  //   if (itemMap.isNotEmpty) {
-  //     itemMap.forEach((key, value) {
-  //       print(key);
-  //       print(value);
-  //     });
-  //     ref.watch(providerDemo.notifier).setItemMap(itemMap);
-  //     return itemMap;
-  //   } else {
-  //     return itemMap;
-  //   }
-  // }
-
-  // Future<HashMap> supplierQueryFind(WidgetRef ref) async {
-  //   print("get supplier ");
-  //   HashMap supplierMap = await ApiService().supplierQueryFind(ref);
-  //   await Future.delayed(const Duration(seconds: 1));
-  //   print("supplier map : $supplierMap");
-  //   List<String> suppliers = [];
-  //   supplierMap.forEach((key, value) {
-  //     suppliers.add(key);
-  //   });
-  //   ref.watch(providerDemo.notifier).setSuppliers(suppliers);
-  //   return supplierMap;
-  // }
+  void goExit() {
+    Navigator.pop(context);
+    goMenu();
+  }
 
   // Future<HashMap> consigneeQueryFind(WidgetRef ref) async {
   //   print("get consignee");
@@ -138,6 +54,6 @@ class _PagesControllerState extends State<PagesController> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: MenuScreen("hello"));
+    return Scaffold(body: MenuScreen(goExit, goPlay, goBestScores));
   }
 }
