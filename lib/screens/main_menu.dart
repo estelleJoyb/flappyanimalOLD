@@ -1,4 +1,5 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'leaderboard_page.dart';
 
 class MainMenu extends StatelessWidget {
@@ -38,6 +39,7 @@ class MainMenu extends StatelessWidget {
                 child: Text('Jouer'),
                 onPressed: () {
                   // Naviguer vers l'écran de jeu
+                  // Implémentez cette navigation quand vous aurez créé l'écran de jeu
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
@@ -52,13 +54,37 @@ class MainMenu extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => LeaderboardPage()),
                   );
                 },
-                // ... le reste du style du bouton
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                ),
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 child: Text('Quitter'),
                 onPressed: () {
-                  // Quitter l'application
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Quitter le jeu'),
+                        content: Text('Êtes-vous sûr de vouloir quitter?'),
+                        actions: [
+                          TextButton(
+                            child: Text('Annuler'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: Text('Quitter'),
+                            onPressed: () {
+                              SystemNavigator.pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
