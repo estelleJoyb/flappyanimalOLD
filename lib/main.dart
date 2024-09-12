@@ -29,13 +29,14 @@ class FlappyBirdGame extends StatefulWidget {
 class _FlappyBirdGameState extends State<FlappyBirdGame> {
   double birdY = 0;
   double time = 0;
-  double height = 0.1;
-  double velocity = 0;
-  double gravity = -6;
+  // double height = 0.1;
+  double velocityX = 0;
+  double gravity = 0.0004;
+  double velocityY = 0;
   double birdWidth = 0.07;
-  double birdHeight = 0.1;
+  double birdHeight = 0.05;
   double pipeWidth = 0.2;
-  double pipeGap = 0.7; // Ajout de l'écart entre les tuyaux
+  double pipeGap = 0.3; // Ajout de l'écart entre les tuyaux
   List<List<double>> pipes = [];
   bool gameHasStarted = false;
   bool gameOver = false;
@@ -44,22 +45,27 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(Duration(milliseconds: 60), (timer) {
+    Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (gameHasStarted && !gameOver) {
         setState(() {
           time += 0.1;
-          height = gravity * time * time + velocity * time;
-          birdY -= 0.01;
+          // height = gravity * time * time + velocityX * time;
+          if(velocityY<0){
+            velocityY+=gravity*10;
+          }else{
+            velocityY = min(0.012, velocityY+gravity);
+          }
+          birdY -= velocityY;
 
           // Add pipes if needed
-          if (pipes.isEmpty || pipes.last[0] < 0.5) {
+          if (pipes.isEmpty || pipes.last[0] < 0.2) {
             double pipeY = Random().nextDouble() * (1 - pipeGap);
             pipes.add([1.0, pipeY]);
           }
 
           // Move pipes and check for collision
           for (int i = 0; i < pipes.length; i++) {
-            pipes[i][0] -= 0.02;
+            pipes[i][0] -= velocityX;
             if (pipes[i][0] < -pipeWidth) {
               pipes.removeAt(i);
               score++;
@@ -115,15 +121,16 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
         gameHasStarted = true;
         pipes = [];
         score = 0;
-        birdY = 0.1;
+        birdY = 0.5;
         gameOver = false;
-        velocity = 0.5;
+        velocityX = 0.01;
         time = 0;
-        height = 0.01;
+        // height = 0.01;
       });
     } else {
       setState(() {
-        birdY += 0.1;
+        // birdY += 0.3;
+        velocityY = -0.035;
       });
     }
   }
@@ -198,8 +205,6 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                                     width: 2), // Bordure pour hitbox
                               ),
                             ),
-                            
-                            
                           ],
                         ),
                       );
