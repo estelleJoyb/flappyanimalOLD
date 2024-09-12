@@ -174,8 +174,8 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                             Container(
                               width:
                                   MediaQuery.of(context).size.width * pipeWidth,
-                              height:
-                                  MediaQuery.of(context).size.height * pipe[1],
+                              height: MediaQuery.of(context).size.height *
+                                  (1 - pipe[1] - pipeGap),
                               decoration: BoxDecoration(
                                 color: Colors.brown,
                                 border: Border.all(
@@ -189,8 +189,8 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                             Container(
                               width:
                                   MediaQuery.of(context).size.width * pipeWidth,
-                              height: MediaQuery.of(context).size.height *
-                                  (1 - pipe[1] - pipeGap),
+                              height:
+                                  MediaQuery.of(context).size.height * pipe[1],
                               decoration: BoxDecoration(
                                 color: Colors.brown,
                                 border: Border.all(
@@ -198,6 +198,8 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                                     width: 2), // Bordure pour hitbox
                               ),
                             ),
+                            
+                            
                           ],
                         ),
                       );
