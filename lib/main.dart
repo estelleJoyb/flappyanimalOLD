@@ -35,12 +35,12 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
   double birdWidth = 0.07;
   double birdHeight = 0.1;
   double pipeWidth = 0.2;
-  double pipeGap = 0.3; // Ajout de l'écart entre les tuyaux
+  double pipeGap = 0.7; // Ajout de l'écart entre les tuyaux
   List<List<double>> pipes = [];
   bool gameHasStarted = false;
   bool gameOver = false;
   int score = 0;
-  
+
   @override
   void initState() {
     super.initState();
@@ -73,7 +73,7 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
       }
     });
   }
-  
+
   void _checkCollisions() {
     double birdBottom = birdY + birdHeight;
     double birdLeft = 0.1;
@@ -81,28 +81,29 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
 
     for (var pipe in pipes) {
       double pipeX = pipe[0];
-      double pipeY = pipe[1];
+      double pipeGapY = pipe[1]; // Position du haut du "gap"
+      double gapBottom = pipeGapY + pipeGap; // Position du bas du "gap"
 
       double pipeLeft = pipeX;
       double pipeRight = pipeLeft + pipeWidth;
-      double pipeTop = pipeY;
-      double pipeBottom = pipeY + pipeGap;
 
-      // Vérification des collisions horizontales
-      bool birdInsidePipeHorizontally = birdRight > pipeLeft && birdLeft < pipeRight;
-      
-      // Vérification des collisions verticales (oiseaux touche les bords des tuyaux)
-      bool birdHitsTopPipe = birdY < pipeTop;
-      bool birdHitsBottomPipe = birdBottom > pipeBottom;
+      // Vérification des collisions horizontales : L'oiseau est à l'intérieur du tuyau horizontalement
+      bool birdInsidePipeHorizontally =
+          birdRight > pipeLeft && birdLeft < pipeRight;
 
-      if (birdInsidePipeHorizontally && (birdHitsTopPipe || birdHitsBottomPipe)) {
+      // Vérification des collisions verticales : L'oiseau doit être dans le gap entre les deux tuyaux
+      bool birdHitsTopPipe = birdY < pipeGapY; // L'oiseau touche le haut du gap
+      bool birdHitsBottomPipe = birdBottom > gapBottom; // L'oiseau touche le bas du gap
+
+      if (birdInsidePipeHorizontally &&
+          (birdHitsTopPipe || birdHitsBottomPipe)) {
         gameOver = true;
         gameHasStarted = false;
       }
     }
 
-    // Check if the bird hits the ground or ceiling
-    if (birdY <= 0 || birdY >= 1 - birdHeight) {
+    // Vérification si l'oiseau touche le sol ou le plafond
+    if (birdY <= 0 || birdY + birdHeight >= 1) {
       gameOver = true;
       gameHasStarted = false;
     }
@@ -126,7 +127,7 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,7 +158,9 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                         height: MediaQuery.of(context).size.height * birdHeight,
                         decoration: BoxDecoration(
                           color: Colors.yellow,
-                          border: Border.all(color: Colors.red, width: 2), // Bordure pour hitbox
+                          border: Border.all(
+                              color: Colors.red,
+                              width: 2), // Bordure pour hitbox
                         ),
                       ),
                     ),
@@ -169,20 +172,30 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                         child: Column(
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * pipeWidth,
-                              height: MediaQuery.of(context).size.height * pipe[1],
+                              width:
+                                  MediaQuery.of(context).size.width * pipeWidth,
+                              height:
+                                  MediaQuery.of(context).size.height * pipe[1],
                               decoration: BoxDecoration(
                                 color: Colors.brown,
-                                border: Border.all(color: Colors.red, width: 2), // Bordure pour hitbox
+                                border: Border.all(
+                                    color: Colors.red,
+                                    width: 2), // Bordure pour hitbox
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height * pipeGap),
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height *
+                                    pipeGap),
                             Container(
-                              width: MediaQuery.of(context).size.width * pipeWidth,
-                              height: MediaQuery.of(context).size.height * (1 - pipe[1] - pipeGap),
+                              width:
+                                  MediaQuery.of(context).size.width * pipeWidth,
+                              height: MediaQuery.of(context).size.height *
+                                  (1 - pipe[1] - pipeGap),
                               decoration: BoxDecoration(
                                 color: Colors.brown,
-                                border: Border.all(color: Colors.red, width: 2), // Bordure pour hitbox
+                                border: Border.all(
+                                    color: Colors.red,
+                                    width: 2), // Bordure pour hitbox
                               ),
                             ),
                           ],
