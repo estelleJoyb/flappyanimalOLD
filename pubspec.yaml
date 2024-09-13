@@ -72,6 +72,8 @@ flutter:
     - assets/images/backgrounds/7/5.png
     - assets/images/backgrounds/8/5.png
     - assets/images/backgrounds/defaultBackground.jpg
+    - assets/images/backgrounds/background2.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

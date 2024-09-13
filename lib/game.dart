@@ -129,7 +129,7 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
                         child: ScrollingBackground(
-                        imagePath: 'assets/images/backgrounds/5/7.png', isGameOver: gameOver,),
+                        imagePath: 'assets/images/backgrounds/background2.png', isGameOver: gameOver,),
                       ),
                     ),
                     Bird(birdY: birdY, birdHeight: birdHeight, birdWidth: birdWidth),

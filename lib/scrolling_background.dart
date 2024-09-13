@@ -47,7 +47,7 @@ class _ScrollingBackgroundState extends State<ScrollingBackground>
               bottom: 0,
               child: Image.asset(
                 widget.imagePath,
-                width: MediaQuery.of(context).size.width * 2, // Double largeur pour le défilement
+                width: MediaQuery.of(context).size.width * 1, // Double largeur pour le défilement
                 height: MediaQuery.of(context).size.height,
                 fit: BoxFit.fill,
               ),
@@ -57,7 +57,7 @@ class _ScrollingBackgroundState extends State<ScrollingBackground>
               bottom: 0,
               child: Image.asset(
                 widget.imagePath,
-                width: MediaQuery.of(context).size.width * 2, // Double largeur pour le défilement
+                width: MediaQuery.of(context).size.width * 1, // Double largeur pour le défilement
                 height: MediaQuery.of(context).size.height,
                 fit: BoxFit.fill,
               ),
