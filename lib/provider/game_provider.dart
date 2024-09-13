@@ -151,39 +151,38 @@ class GameNotifier extends StateNotifier<Game> {
   }
 
   void jump() {
-    print("jump !! game has started ${state.gameHasStarted}");
     Game newGame = state.cloneGame();
     if (!newGame.gameHasStarted) {
       newGame.gameHasStarted = true;
       newGame.pipes = [];
       newGame.score = 0;
-      newGame.birdY = 0.5; // Y start position
+      newGame.birdY = 0.5;
       newGame.gameOver = false;
       newGame.velocityX = 0.01;
       newGame.time = 0;
     } else {
-      print("velocity !! ${newGame.velocityY}");
-      newGame.velocityY = -0.035; // Adjust jump force
+      newGame.velocityY = -0.035;
     }
     state = newGame;
   }
 
   void initGame() {
-    print("init game !!");
     Timer.periodic(const Duration(milliseconds: 16), (timer) {
       Game newGame = state.cloneGame();
       if (newGame.gameHasStarted && !newGame.gameOver) {
-        newGame.time += 0.016; // simulate 60 fps
-        newGame.birdY -=
-            newGame.velocityY; // Apply the velocity to bird position
-        newGame.velocityY += newGame.gravity; // Update velocity with gravity
+        newGame.time += 0.016;
+        if (newGame.velocityY < 0) {
+          newGame.velocityY += newGame.gravity * 10;
+        } else {
+          newGame.velocityY = min(0.012, newGame.velocityY + newGame.gravity);
+        }
+        newGame.birdY -= newGame.velocityY;
 
         if (newGame.pipes.isEmpty || newGame.pipes.last[0] < 0.2) {
           double pipeY = Random().nextDouble() * (1 - newGame.pipeGap);
           newGame.addPipe([1.0, pipeY]);
         }
 
-        // Move pipes and remove those that are off-screen
         for (int i = 0; i < newGame.pipes.length; i++) {
           newGame.pipes[i][0] -= newGame.velocityX;
           if (newGame.pipes[i][0] < -newGame.pipeWidth) {
@@ -198,7 +197,7 @@ class GameNotifier extends StateNotifier<Game> {
       }
 
       if (newGame.gameOver) {
-        timer.cancel(); // Stop the game loop when the game is over
+        timer.cancel();
       }
     });
   }
