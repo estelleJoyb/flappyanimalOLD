@@ -157,32 +157,33 @@ class GameNotifier extends StateNotifier<Game> {
       newGame.gameHasStarted = true;
       newGame.pipes = [];
       newGame.score = 0;
-      newGame.birdY = 0;
+      newGame.birdY = 0.5; // Y start position
       newGame.gameOver = false;
       newGame.velocityX = 0.01;
       newGame.time = 0;
     } else {
       print("velocity !! ${newGame.velocityY}");
-      newGame.velocityY = -0.035;
+      newGame.velocityY = -0.035; // Adjust jump force
     }
     state = newGame;
   }
 
   void initGame() {
     print("init game !!");
-    Game newGame = state.cloneGame();
     Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      Game newGame = state.cloneGame();
       if (newGame.gameHasStarted && !newGame.gameOver) {
-        newGame.time += 0.1;
-        if (newGame.velocityY < 0) {
-          newGame.velocityY += newGame.gravity * 10;
-        } else {
-          newGame.velocityY -= newGame.velocityY;
-        }
+        newGame.time += 0.016; // simulate 60 fps
+        newGame.birdY -=
+            newGame.velocityY; // Apply the velocity to bird position
+        newGame.velocityY += newGame.gravity; // Update velocity with gravity
+
         if (newGame.pipes.isEmpty || newGame.pipes.last[0] < 0.2) {
           double pipeY = Random().nextDouble() * (1 - newGame.pipeGap);
           newGame.addPipe([1.0, pipeY]);
         }
+
+        // Move pipes and remove those that are off-screen
         for (int i = 0; i < newGame.pipes.length; i++) {
           newGame.pipes[i][0] -= newGame.velocityX;
           if (newGame.pipes[i][0] < -newGame.pipeWidth) {
@@ -191,11 +192,15 @@ class GameNotifier extends StateNotifier<Game> {
             i--;
           }
         }
+
         state = newGame;
         checkCollisions();
       }
+
+      if (newGame.gameOver) {
+        timer.cancel(); // Stop the game loop when the game is over
+      }
     });
-    state = newGame;
   }
 }
 

@@ -10,17 +10,17 @@ class Bird extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Positioned(
-        bottom: birdY * MediaQuery.of(context).size.height,
-        left: MediaQuery.of(context).size.width * 0.1,
-        child: Image.asset(
-          'images/characters/CluckingChicken/CluckingChickenIdleSide.gif',
-          width: MediaQuery.of(context).size.width * birdWidth,
-          height: MediaQuery.of(context).size.height * birdHeight,
-          fit: BoxFit.fill,
-        ));
+      top: (1 - birdY) * screenHeight,
+      left: MediaQuery.of(context).size.width * 0.1,
+      child: Image.asset(
+        'images/characters/CluckingChicken/CluckingChickenIdleSide.gif',
+        width: MediaQuery.of(context).size.width * birdWidth,
+        height: screenHeight * birdHeight,
+        fit: BoxFit.fill,
+      ),
+    );
   }
 }
-
-
-//AssetImage('background.jpg')

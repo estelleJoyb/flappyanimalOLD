@@ -40,19 +40,6 @@ class _PagesControllerState extends State<PagesController> {
     goMenu();
   }
 
-  // Future<HashMap> consigneeQueryFind(WidgetRef ref) async {
-  //   print("get consignee");
-  //   HashMap consigneeMap = await ApiService().consigneeQueryFind(ref);
-  //   await Future.delayed(const Duration(seconds: 1));
-  //   print("consignee map : $consigneeMap");
-  //   List<String> consignees = [];
-  //   consigneeMap.forEach((key, value) {
-  //     consignees.add(key);
-  //   });
-  //   ref.watch(providerDemo.notifier).setConsignees(consignees);
-  //   return consigneeMap;
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: MenuScreen(goExit, goPlay, goBestScores));
