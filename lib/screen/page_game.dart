@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flappyanimal/components/bird_component.dart';
 import 'package:flappyanimal/components/gameover_component.dart';
 import 'package:flappyanimal/components/pipe_component.dart';
+import 'package:flappyanimal/components/scrolling_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flappyanimal/provider/game_provider.dart';
@@ -44,10 +45,11 @@ class GameScreen extends ConsumerWidget {
                     Positioned(
                       bottom: 0,
                       left: 0,
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        color: const Color.fromARGB(255, 76, 150, 175),
+                        child: ScrollingBackground(
+                        imagePath: 'assets/game_background.png', isGameOver: gameState.gameOver,),
                       ),
                     ),
                     Bird(
