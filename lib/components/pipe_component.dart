@@ -46,7 +46,6 @@ class Pipe extends StatelessWidget {
           // Espace vide correspondant au "gap" entre les tuyaux
           SizedBox(height: screenHeight * pipeGap),
           // Partie inférieure du tuyau (qui vient du bas)
-          // Rotation à 180 degrés pour le tuyau du bas
           Container(
             width: screenWidth * pipeWidth,
             height: screenHeight * pipeY,
