@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flappyanimal/provider/flappyanimal_provider.dart';
 import 'package:flappyanimal/screen/page_menu.dart';
 import 'package:flappyanimal/screen/page_game.dart';
+import 'package:flappyanimal/screen/page_scores.dart';
 
 class PagesController extends StatefulWidget {
   const PagesController({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _PagesControllerState extends State<PagesController> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => MenuScreen(goExit, goPlay, goBestScores)));
+            builder: (context) => ScoreScreen(goExit, goMenu, goPlay)));
   }
 
   void goPlay() {

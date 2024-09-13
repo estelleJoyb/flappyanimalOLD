@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 //import 'package:flappyanimal/provider/flappyanimal_provider.dart';
 
-class GameScreen extends ConsumerWidget {
+class ScoreScreen extends ConsumerWidget {
   final void Function() goExit;
   final void Function() goMenu;
-  final void Function() goBestScores;
+  final void Function() goPlay;
 
-  const GameScreen(
+  const ScoreScreen(
     this.goExit,
     this.goMenu,
-    this.goBestScores, {
+    this.goPlay, {
     super.key,
   });
   //pour utiliser le provider : ref.watch(providerDemo.notifier).setErreur("truc");
@@ -33,7 +33,7 @@ class GameScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Jouer',
+                'Scores',
                 style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
