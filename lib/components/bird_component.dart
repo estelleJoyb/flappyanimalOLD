@@ -13,10 +13,10 @@ class Bird extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Positioned(
-      top: (1 - birdY) * screenHeight,
+      bottom: birdY * MediaQuery.of(context).size.height,
       left: MediaQuery.of(context).size.width * 0.1,
       child: Image.asset(
-        'images/characters/CluckingChicken/CluckingChickenIdleSide.gif',
+        'assets/images/characters/CluckingChicken/CluckingChickenIdleSide.gif',
         width: MediaQuery.of(context).size.width * birdWidth,
         height: screenHeight * birdHeight,
         fit: BoxFit.fill,
