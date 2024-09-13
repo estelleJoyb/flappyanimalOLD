@@ -1,28 +1,27 @@
-import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
-class Bird extends SpriteComponent {
-  double velocity = 0.0;
+class Bird extends StatelessWidget {
+  final double birdY;
+  final double birdWidth;
+  final double birdHeight;
 
-  Bird() {
-    size = Vector2(50, 50);
-    // Charge l'image de l'oiseau
-  }
-
-  void jump() {
-    velocity = -10.0;
-  }
+  Bird({required this.birdY, required this.birdWidth, required this.birdHeight});
 
   @override
-  void update(double dt) {
-    super.update(dt);
-    velocity += 0.5; // Gravité
-    y += velocity;
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    // Dessine l'oiseau
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: birdY * MediaQuery.of(context).size.height,
+      left: MediaQuery.of(context).size.width * 0.1,
+      child: Container(
+        width: MediaQuery.of(context).size.width * birdWidth,
+        height: MediaQuery.of(context).size.height * birdHeight,
+        decoration: BoxDecoration(
+          color: Colors.yellow,
+          border: Border.all(
+              color: Colors.red,
+              width: 2), // Bordure pour hitbox
+        ),
+      ),
+    );
   }
 }
