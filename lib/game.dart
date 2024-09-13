@@ -1,3 +1,4 @@
+import 'package:flappyanimal/scrolling_background.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
@@ -124,10 +125,11 @@ class _FlappyBirdGameState extends State<FlappyBirdGame> {
                     Positioned(
                       bottom: 0,
                       left: 0,
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
-                        color: const Color.fromARGB(255, 76, 150, 175),
+                        child: ScrollingBackground(
+                        imagePath: 'assets/images/backgrounds/5/7.png', isGameOver: gameOver,),
                       ),
                     ),
                     Bird(birdY: birdY, birdHeight: birdHeight, birdWidth: birdWidth),
