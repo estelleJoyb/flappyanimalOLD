@@ -12,16 +12,12 @@ class Bird extends StatelessWidget {
     return Positioned(
       bottom: birdY * MediaQuery.of(context).size.height,
       left: MediaQuery.of(context).size.width * 0.1,
-      child: Container(
-        width: MediaQuery.of(context).size.width * birdWidth,
-        height: MediaQuery.of(context).size.height * birdHeight,
-        decoration: BoxDecoration(
-          color: Colors.yellow,
-          border: Border.all(
-              color: Colors.red,
-              width: 2), // Bordure pour hitbox
-        ),
-      ),
+      child: Image.asset(
+  'assets/images/characters/CluckingChicken/CluckingChickenIdleSide.gif',
+  width: MediaQuery.of(context).size.width * birdWidth,
+  height: MediaQuery.of(context).size.height * birdHeight,
+  fit: BoxFit.fill,
+  )
     );
   }
 }
