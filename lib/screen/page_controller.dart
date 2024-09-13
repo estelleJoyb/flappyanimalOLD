@@ -1,7 +1,4 @@
-import 'dart:collection';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flappyanimal/screen/page_menu.dart';
 import 'package:flappyanimal/screen/page_game.dart';
 import 'package:flappyanimal/screen/page_scores.dart';

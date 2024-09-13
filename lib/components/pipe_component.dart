@@ -1,6 +1,4 @@
 import 'dart:math';
-
-import 'package:flappyanimal/provider/game_provider.dart';
 import 'package:flutter/material.dart';
 
 class Pipe extends StatelessWidget {
@@ -9,11 +7,13 @@ class Pipe extends StatelessWidget {
   final double pipeWidth;
   final double pipeGap;
 
-  Pipe(
-      {required this.pipeX,
-      required this.pipeY,
-      required this.pipeWidth,
-      required this.pipeGap});
+  const Pipe({
+    super.key, 
+    required this.pipeX,
+    required this.pipeY,
+    required this.pipeWidth,
+    required this.pipeGap
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class Pipe extends StatelessWidget {
             alignment: Alignment.center,
             transform: Matrix4.rotationX(pi),
             // Partie supérieure du tuyau (qui vient du haut)
-            child: Container(
+            child: SizedBox(
               width: screenWidth * pipeWidth,
               height: screenHeight * (1 - pipeY - pipeGap),
               child: Image.asset(
@@ -46,7 +46,7 @@ class Pipe extends StatelessWidget {
           // Espace vide correspondant au "gap" entre les tuyaux
           SizedBox(height: screenHeight * pipeGap),
           // Partie inférieure du tuyau (qui vient du bas)
-          Container(
+          SizedBox(
             width: screenWidth * pipeWidth,
             height: screenHeight * pipeY,
             child: Image.asset(

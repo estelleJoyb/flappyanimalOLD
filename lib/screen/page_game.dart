@@ -1,6 +1,3 @@
-import 'dart:collection';
-import 'dart:convert';
-
 import 'package:flappyanimal/components/bird_component.dart';
 import 'package:flappyanimal/components/gameover_component.dart';
 import 'package:flappyanimal/components/pipe_component.dart';
