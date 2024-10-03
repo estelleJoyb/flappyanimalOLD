@@ -1,3 +1,5 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class Game {
   double birdY = 0;
   double time = 0;
@@ -12,8 +14,10 @@ class Game {
   bool gameHasStarted = false;
   bool gameOver = false;
   int score = 0;
+  FlutterSecureStorage storage = const FlutterSecureStorage();
+  double idPlayer = 0;
 
-  Game(); //constructor
+  Game();
 
   void setBirdY(double y) {
     birdY = y;
@@ -59,8 +63,9 @@ class Game {
     gameOver = go;
   }
 
-  void setScore(int s) {
+  void setScore(int s) async {
     score = s;
+    await storage.write(key: "score", value: s.toString());
   }
 
   void setBirdWidth(double w) {
@@ -69,6 +74,36 @@ class Game {
 
   void setBirdHeigth(double h) {
     birdHeight = h;
+  }
+
+  Future<void> setIdPlayer(double id) async {
+    idPlayer = id;
+    await storage.write(key: "idPlayer", value: id.toString());
+  }
+
+  Future<int> getScore() async {
+    String? scoreStr = await storage.read(key: "score");
+    if (scoreStr == null) {
+      return 0;
+    }
+    return int.parse(scoreStr);
+  }
+
+  Future<double> getIdPlayer() async {
+    String? idStr = await storage.read(key: "idPlayer");
+    if (idStr == null) {
+      return 0;
+    }
+    return double.parse(idStr);
+  }
+
+  void removeScoreFromStorage() async {
+    await storage.delete(key: 'score');
+  }
+
+  void exit() async {
+    await storage.delete(key: 'idPlayer');
+    await storage.delete(key: 'score');
   }
 
   Game cloneGame() {
@@ -86,6 +121,8 @@ class Game {
     newGame.gravity = gravity;
     newGame.gameOver = gameOver;
     newGame.gameHasStarted = gameHasStarted;
+    newGame.storage = storage;
+    newGame.idPlayer = idPlayer;
     return newGame;
   }
 }

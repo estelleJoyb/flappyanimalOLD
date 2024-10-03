@@ -75,7 +75,8 @@ class GameScreen extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    if (gameState.gameOver) GameOverScreen(goMenu),
+                    if (gameState.gameOver)
+                      GameOverScreen(goMenu, gameState.score),
                   ],
                 ),
               ),

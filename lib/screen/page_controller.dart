@@ -1,3 +1,4 @@
+import 'package:flappyanimal/provider/game_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flappyanimal/screen/page_menu.dart';
 import 'package:flappyanimal/screen/page_game.dart';
@@ -34,6 +35,7 @@ class _PagesControllerState extends State<PagesController> {
 
   void goExit() {
     Navigator.pop(context);
+    GameNotifier().exit();
     goMenu();
   }
 

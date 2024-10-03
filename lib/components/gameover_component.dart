@@ -1,44 +1,40 @@
+import 'package:flappyanimal/provider/game_provider.dart';
 import 'package:flutter/material.dart';
 
 class GameOverScreen extends StatelessWidget {
   final void Function() goMenu;
-  const GameOverScreen(this.goMenu, {super.key});
+  final int score;
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Column(
-  //     //mainAxisAlignment: MainAxisAlignment.center,
-  //     children: [
-  //       const Text(
-  //         'Game Over!',
-  //         style: TextStyle(
-  //             color: Colors.red, fontSize: 32, fontWeight: FontWeight.bold),
-  //       ),
-  //       const Text(
-  //         'Tap to play again',
-  //         style: TextStyle(
-  //             color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
-  //       ),
-  //       ElevatedButton(
-  //         onPressed: () {
-  //           goMenu();
-  //         },
-  //         child: const Text('Retour au menu'),
-  //       ),
-  //     ],
-  //   );
-  // }
+  const GameOverScreen(this.goMenu, this.score, {super.key});
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return const Center(
-  //     child: Text(
-  //       'Game Over!',
-  //       style: TextStyle(
-  //           color: Colors.red, fontSize: 32, fontWeight: FontWeight.bold),
-  //     ),
-  //   );
-  // }
+  Future<void> showNameDialog(BuildContext context) async {
+    TextEditingController nameController = TextEditingController();
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enter your name'),
+          content: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(hintText: "Your name"),
+          ),
+          actions: [
+            ElevatedButton(
+              child: const Text('Submit'),
+              onPressed: () {
+                Navigator.of(context).pop(nameController.text);
+              },
+            ),
+          ],
+        );
+      },
+    );
+    String playerName = nameController.text;
+    if (playerName.isNotEmpty) {
+      GameNotifier().setScore(score);
+      await GameNotifier().savePlayerScore(playerName);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +44,6 @@ class GameOverScreen extends StatelessWidget {
         children: [
           Stack(
             children: <Widget>[
-              // Stroked text as border.
               Text(
                 'Game Over!',
                 style: TextStyle(
@@ -93,10 +88,26 @@ class GameOverScreen extends StatelessWidget {
             height: 10,
           ),
           ElevatedButton(
+            onPressed: () async {
+              double? idPlayer = await GameNotifier().getIdPlayer();
+              if (idPlayer == 0) {
+                // ignore: use_build_context_synchronously
+                await showNameDialog(context);
+              } else {
+                GameNotifier().setScore(score);
+                await GameNotifier().savePlayerScore();
+              }
+            },
+            child: const Text('Save Score'),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
             onPressed: () {
               goMenu();
             },
-            child: const Text('Retour au menu'),
+            child: const Text('Back to Menu'),
           ),
         ],
       ),
