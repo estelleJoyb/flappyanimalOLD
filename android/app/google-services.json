@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "365329128929",
+    "project_id": "flappy-animal",
+    "storage_bucket": "flappy-animal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365329128929:android:af94fae4934007097046a0",
+        "android_client_info": {
+          "package_name": "com.example.flappyanimal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF7MzJSjaMrxnoOb5ELe_6FZ156MwvEYM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

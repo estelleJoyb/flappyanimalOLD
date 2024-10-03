@@ -46,7 +46,9 @@ class GameScreen extends ConsumerWidget {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
                         child: ScrollingBackground(
-                        imagePath: 'assets/game_background.png', isGameOver: gameState.gameOver,),
+                          imagePath: 'assets/game_background.png',
+                          isGameOver: gameState.gameOver,
+                        ),
                       ),
                     ),
                     Bird(
@@ -73,7 +75,7 @@ class GameScreen extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    if (gameState.gameOver) const GameOverScreen(),
+                    if (gameState.gameOver) GameOverScreen(goMenu),
                   ],
                 ),
               ),

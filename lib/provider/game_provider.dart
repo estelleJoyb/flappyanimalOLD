@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flappyanimal/modele/game.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+final CollectionReference score = FirebaseFirestore.instance.collection('score');
 
 Game _game = Game();
 
