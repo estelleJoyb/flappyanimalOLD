@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final userNameProvider = StateProvider<String?>((ref) => null);
+final currentPlayerScoreProvider = StateProvider<int>((ref) => 0);
 
 class ScoreScreen extends ConsumerWidget {
   final void Function() goExit;
   final void Function() goMenu;
   final void Function() goPlay;
   double idPlayer = 0;
+  int currentPlayerScore = 0;
   late final CollectionReference score =
       FirebaseFirestore.instance.collection('score');
 
@@ -22,12 +24,51 @@ class ScoreScreen extends ConsumerWidget {
 
   Future<void> init(BuildContext context, WidgetRef ref) async {
     idPlayer = await GameNotifier().getIdPlayer();
+    currentPlayerScore = await GameNotifier().getScore();
     String? fetchedUserName =
         await GameNotifier().getUserNameFromIdPlayer(idPlayer);
-
     ref.read(userNameProvider.notifier).state = fetchedUserName;
+    ref.read(currentPlayerScoreProvider.notifier).state = currentPlayerScore;
+  }
 
-    print("name $fetchedUserName");
+  Future<void> updateUserName(BuildContext context, WidgetRef ref) async {
+    String? newUserName = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        String tempUserName = "";
+        return AlertDialog(
+          title: const Text('Modifier le nom d\'utilisateur'),
+          content: TextField(
+            onChanged: (value) {
+              tempUserName = value;
+            },
+            decoration:
+                const InputDecoration(hintText: "Entrez le nouveau nom"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Annuler'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Confirmer'),
+              onPressed: () {
+                Navigator.of(context).pop(tempUserName);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (newUserName != null && newUserName.isNotEmpty) {
+      await GameNotifier().changeUserName(idPlayer, newUserName);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        init(context, ref);
+      });
+    }
   }
 
   @override
@@ -37,8 +78,14 @@ class ScoreScreen extends ConsumerWidget {
     });
 
     String? userName = ref.watch(userNameProvider);
+    int currentPlayerScore = ref.watch(currentPlayerScoreProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+      ),
+      extendBodyBehindAppBar: true,
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -51,7 +98,7 @@ class ScoreScreen extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Best Scores',
+                'Top 10 Best Scores',
                 style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
@@ -66,24 +113,53 @@ class ScoreScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 15),
-              ElevatedButton(
-                onPressed: () {
-                  goMenu();
-                },
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                ),
-                child: const Text('Back to Menu'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Stack(
+                    children: <Widget>[
+                      Text(
+                        userName != null
+                            ? "$userName Best Score is ${currentPlayerScore}pts"
+                            : "",
+                        style: TextStyle(
+                          fontSize: 20,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 4
+                            ..color = Colors.lightBlue,
+                        ),
+                      ),
+                      Text(
+                        userName != null
+                            ? "$userName Best Score is ${currentPlayerScore}pts"
+                            : "",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 10),
+                  userName != null
+                      ? IconButton(
+                          tooltip: "Change username",
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () => updateUserName(context, ref),
+                        )
+                      : const SizedBox(width: 0),
+                ],
               ),
-              const SizedBox(height: 10),
-              Text(userName ?? ""),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.7,
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: StreamBuilder(
-                  stream: score.orderBy('point', descending: true).snapshots(),
+                  stream: score
+                      .orderBy('point', descending: true)
+                      .limit(10)
+                      .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) {
                       return const Center(child: CircularProgressIndicator());
@@ -99,7 +175,7 @@ class ScoreScreen extends ConsumerWidget {
                           child: ListTile(
                             tileColor: Colors.cyan[50],
                             title: Text(
-                              '${data['nom-joueur']} : ${data['point']}',
+                              '${data['nom-joueur']} : ${data['point']}pts',
                               style: const TextStyle(
                                 fontSize: 18,
                                 color: Colors.blue,
