@@ -170,16 +170,23 @@ class ScoreScreen extends ConsumerWidget {
                           snapshot.data!.docs.map((DocumentSnapshot document) {
                         Map<String, dynamic> data =
                             document.data() as Map<String, dynamic>;
+                        bool isCurrentPlayer = data['id-player'] == idPlayer;
                         return Material(
                           type: MaterialType.transparency,
                           child: ListTile(
-                            tileColor: Colors.cyan[50],
+                            tileColor: isCurrentPlayer
+                                ? Colors.orange[100]
+                                : Colors.cyan[50],
                             title: Text(
                               '${data['nom-joueur']} : ${data['point']}pts',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
+                                color: isCurrentPlayer
+                                    ? Colors.deepOrange
+                                    : Colors.blue,
+                                fontWeight: isCurrentPlayer
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                               ),
                             ),
                           ),
