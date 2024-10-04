@@ -1,9 +1,5 @@
-import 'dart:collection';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-//import 'package:flappyanimal/provider/flappyanimal_provider.dart';
 
 class MenuScreen extends ConsumerWidget {
   final void Function() goExit;
@@ -55,7 +51,7 @@ class MenuScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 50, vertical: 20),
                   ),
-                  child: const Text('Jouer')),
+                  child: const Text('Play')),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
@@ -65,7 +61,7 @@ class MenuScreen extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 ),
-                child: const Text('Meilleurs Scores'),
+                child: const Text('Best Scores'),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -76,7 +72,7 @@ class MenuScreen extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 ),
-                child: const Text('Quitter'),
+                child: const Text('Exit'),
               ),
             ],
           ),

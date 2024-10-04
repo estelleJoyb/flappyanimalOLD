@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:collection';
+import 'dart:html';
 import 'dart:math';
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flappyanimal/modele/game.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final CollectionReference score =
+    FirebaseFirestore.instance.collection('score');
 
 Game _game = Game();
 
@@ -78,6 +79,12 @@ class GameNotifier extends StateNotifier<Game> {
     state = newGame;
   }
 
+  void setIdPlayer(double i) {
+    Game newGame = state.cloneGame();
+    newGame.setIdPlayer(i);
+    state = newGame;
+  }
+
   //getters
   bool getGamehasstarted() {
     return state.gameHasStarted;
@@ -87,8 +94,8 @@ class GameNotifier extends StateNotifier<Game> {
     return state.gameOver;
   }
 
-  int getScore() {
-    return state.score;
+  Future<int> getScore() {
+    return state.getScore();
   }
 
   double getPipeWidth() {
@@ -115,8 +122,12 @@ class GameNotifier extends StateNotifier<Game> {
     return state.pipes;
   }
 
+  Future<double> getIdPlayer() {
+    return state.getIdPlayer();
+  }
+
   // actions
-  void checkCollisions() {
+  void checkCollisions(int score) {
     Game newGame = state.cloneGame();
     double birdBottom = newGame.birdY + newGame.birdHeight;
     double birdLeft = 0.1;
@@ -167,6 +178,7 @@ class GameNotifier extends StateNotifier<Game> {
   }
 
   void initGame() {
+    state.removeScoreFromStorage();
     Timer.periodic(const Duration(milliseconds: 16), (timer) {
       Game newGame = state.cloneGame();
       if (newGame.gameHasStarted && !newGame.gameOver) {
@@ -193,13 +205,62 @@ class GameNotifier extends StateNotifier<Game> {
         }
 
         state = newGame;
-        checkCollisions();
+        checkCollisions(newGame.score);
       }
 
       if (newGame.gameOver) {
         timer.cancel();
       }
     });
+  }
+
+  Future<String?> getUserNameFromIdPlayer(double idPlayer) async {
+    QuerySnapshot existingPlayerSnapshot =
+        await score.where('id-player', isEqualTo: idPlayer).limit(1).get();
+    if (existingPlayerSnapshot.docs.isNotEmpty) {
+      var playerData =
+          existingPlayerSnapshot.docs.first.data() as Map<String, dynamic>;
+      return playerData['nom-joueur'] as String?;
+    }
+    return null;
+  }
+
+  Future<void> changeUserName(double idPlayer, String newName) async {
+    if (newName != "") {
+      QuerySnapshot existingPlayerSnapshot =
+          await score.where('id-player', isEqualTo: idPlayer).limit(1).get();
+      if (existingPlayerSnapshot.docs.isNotEmpty) {
+        await existingPlayerSnapshot.docs.first.reference.update({
+          'nom-joueur': newName,
+        });
+      }
+    }
+  }
+
+  Future<void> savePlayerScore([String? playerName]) async {
+    double? idPlayer = await getIdPlayer();
+    if (idPlayer == 0 && playerName != null) {
+      idPlayer = Random().nextDouble() * 256;
+      await state.setIdPlayer(idPlayer);
+      await score.add({
+        'nom-joueur': playerName,
+        'point': await getScore(),
+        'id-player': idPlayer,
+      });
+    } else if (idPlayer != 0) {
+      QuerySnapshot existingPlayerSnapshot =
+          await score.where('id-player', isEqualTo: idPlayer).limit(1).get();
+
+      if (existingPlayerSnapshot.docs.isNotEmpty) {
+        await existingPlayerSnapshot.docs.first.reference.update({
+          'point': await getScore(),
+        });
+      }
+    }
+  }
+
+  Future<void> exit() async {
+    state.exit();
   }
 }
 

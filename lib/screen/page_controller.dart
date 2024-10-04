@@ -1,7 +1,5 @@
-import 'dart:collection';
-import 'dart:convert';
+import 'package:flappyanimal/provider/game_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flappyanimal/screen/page_menu.dart';
 import 'package:flappyanimal/screen/page_game.dart';
 import 'package:flappyanimal/screen/page_scores.dart';
@@ -37,6 +35,7 @@ class _PagesControllerState extends State<PagesController> {
 
   void goExit() {
     Navigator.pop(context);
+    GameNotifier().exit();
     goMenu();
   }
 
