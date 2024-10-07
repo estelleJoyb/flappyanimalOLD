@@ -66,6 +66,7 @@ flutter:
   assets:
     - assets/images/characters/CluckingChicken/CluckingChickenIdleSide.gif
     - assets/game_background.png
+    - assets/background.png
     - assets/pipe.png
 
 

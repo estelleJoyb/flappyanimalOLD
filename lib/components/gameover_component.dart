@@ -15,6 +15,7 @@ class GameOverScreen extends StatelessWidget {
         return AlertDialog(
           title: const Text('Enter your name'),
           content: TextField(
+            maxLength: 12,
             controller: nameController,
             decoration: const InputDecoration(hintText: "Your name"),
           ),

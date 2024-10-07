@@ -39,6 +39,7 @@ class ScoreScreen extends ConsumerWidget {
         return AlertDialog(
           title: const Text('Modifier le nom d\'utilisateur'),
           content: TextField(
+            maxLength: 12,
             onChanged: (value) {
               tempUserName = value;
             },
@@ -89,7 +90,7 @@ class ScoreScreen extends ConsumerWidget {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('background.jpg'),
+            image: AssetImage('assets/background.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -100,7 +101,7 @@ class ScoreScreen extends ConsumerWidget {
               const Text(
                 'Top 10 Best Scores',
                 style: TextStyle(
-                  fontSize: 48,
+                  fontSize: 35,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   shadows: [
